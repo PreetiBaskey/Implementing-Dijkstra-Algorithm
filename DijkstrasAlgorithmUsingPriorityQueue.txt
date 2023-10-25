@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+const int V = 3;
+
+vector<int> findShortestPath(vector<vector<int>> adj[], int source, priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> &pq, vector<int> &result) {
+    
+    while(!pq.empty()) {
+        int d = pq.top().first;
+        int node = pq.top().second;
+        pq.pop();
+        for(auto &neighbour: adj[node]) {
+            int adjNode = neighbour[0];
+            int dist = neighbour[1];
+            if(d + dist < result[adjNode]) {
+                result[adjNode] = d + dist;
+                pq.push({d + dist, adjNode});
+            }
+        }
+    }
+    return result;
+}
+
+void addEdge(vector<vector<int>> adj[], int source, int destination, int weight) {
+    adj[source].push_back({destination, weight});
+    adj[destination].push_back({source, weight});
+}
+
+int main() {
+    
+    vector<vector<int>> adj[V];
+    
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    vector<int> result(V, INT_MAX);
+    int source = 2;
+    
+    addEdge(adj, 0, 1, 1);
+    addEdge(adj, 0, 2, 6);
+    addEdge(adj, 1, 2, 3);
+    
+    result[source] = 0;
+    pq.push({0, source});
+    
+    findShortestPath(adj, source, pq, result);
+    
+    cout<<"Sortest Paths are :- "<<endl;
+    
+    for(int i = 0; i < V; i++) {
+        cout<<i<<" - "<<result[i]<<endl;
+    }
+    
+    
+    return 0;
+}
